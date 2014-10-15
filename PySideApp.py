@@ -1,18 +1,11 @@
-# The code is placed into public domain by anatoly techtonik
-# Feel free to copy/paste wherever you like
+#! /usr/bin/env python
 
-# Absolutely minimal example of PySide application with button calling dialog
-
-# More info about Qt dialogs:
-# http://www.pyside.org/docs/pyside/PySide/QtGui/QDialog.html#PySide.QtGui.QDialog
-
-from PySide.QtGui import QApplication, QPushButton, QColorDialog, QMessageBox,\
-                         QPixmap
+from PySide.QtGui import QApplication, QPushButton, QColorDialog, QMessageBox, QPixmap
 
 
 def choose_color():
     # Select color
-    color  = QColorDialog().getColor()
+    color = QColorDialog().getColor()
     
     # Report about result of selection in QMessageBox dialog
     msgbox = QMessageBox()
