@@ -33,3 +33,4 @@ class QPicViewer(QtGui.QWidget):
         # =============================
         self.open_button = QtGui.QPushButton("Open Image")
 
+
