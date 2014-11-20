@@ -11,14 +11,11 @@ import sys
 from PySide.QtGui import QMainWindow
 from PySide.QtGui import QApplication
 from PySide.QtGui import QIcon
-from PySide.QtGui import QLabel
 from PySide.QtGui import QToolTip
 from PySide.QtGui import QFont
-from PySide.QtGui import QPushButton
 from PySide.QtGui import QMessageBox
 from PySide.QtGui import QDesktopWidget
 from PySide.QtGui import QStatusBar
-from PySide.QtGui import QMenuBar
 from PySide.QtGui import QAction
 from PySide.QtGui import QKeySequence
 from PySide.QtGui import QTextEdit
@@ -72,6 +69,18 @@ class AppWindow(QMainWindow):
         self.app_status_bar.showMessage('Ready', 10000)
         self.setStatusBar(self.app_status_bar)
 
+        self.create_toolbar()
+        self.maintoolbar.addAction(self.newAction)
+        self.maintoolbar.addSeparator()
+        self.maintoolbar.addAction(self.copyAction)
+        self.maintoolbar.addAction(self.pasteAction)
+
+    def create_toolbar(self):
+        # ===============================
+        # Function to create the toolbar.
+        # ===============================
+        self.maintoolbar = self.addToolBar('Main')
+
     def newfile(self):
         self.textEdit.setText('')
 
@@ -91,32 +100,32 @@ class AppWindow(QMainWindow):
         # =========================================
         # Function to create actions for menu items
         # =========================================
-        self.newAction = QAction(QIcon('digital_assets/AppIcon.png'), 'New',
+        self.newAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'New',
                                  self, shortcut=QKeySequence.New,
                                  statusTip="Create a New File",
                                  triggered=self.newfile)
 
-        self.openAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Open',
-                                 self, shortcut=QKeySequence.Open,
-                                 statusTip="Open a file",
-                                 triggered=self.openfile)
+        self.openAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'Open',
+                                  self, shortcut=QKeySequence.Open,
+                                  statusTip="Open a file",
+                                  triggered=self.openfile)
 
-        self.saveAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Save',
+        self.saveAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'Save',
                                   self, shortcut=QKeySequence.Save,
                                   statusTip="Save a File",
                                   triggered=self.savefile)
 
-        self.saveasAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Save As',
-                                  self, shortcut=QKeySequence.SaveAs,
-                                  statusTip="Save a File As....",
-                                  triggered=self.saveasfile)
+        self.saveasAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'Save As',
+                                    self, shortcut=QKeySequence.SaveAs,
+                                    statusTip="Save a File As....",
+                                    triggered=self.saveasfile)
 
         self.exitAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Exit',
                                   self, shortcut=QKeySequence.Quit,
                                   statusTip="Exit the Application",
                                   triggered=self.quit_application)
 
-        self.undoAction = QAction(QIcon('digital_assets/AppIcon.png)'), 'Undo',
+        self.undoAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Undo',
                                   self, shortcut=QKeySequence.Undo,
                                   statusTip="Undo",
                                   triggered=self.textEdit.undo)
@@ -137,7 +146,7 @@ class AppWindow(QMainWindow):
                                   statusTip="Copy",
                                   triggered=self.textEdit.copy)
 
-        self.pasteAction = QAction(QIcon(':digital_assets/AppIcon.png'), 'Paste',
+        self.pasteAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Paste',
                                    self, shortcut=QKeySequence.Paste,
                                    statusTip="Paste",
                                    triggered=self.textEdit.paste)
@@ -226,6 +235,7 @@ if __name__ == '__main__':
         #templateWindow.create_status_bar()
         #templateWindow.setup_components()
         templateWindow.show()
+        templateWindow.raise_()
 
         templateApp.exec_()
         sys.exit(0)
