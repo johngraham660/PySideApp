@@ -21,6 +21,7 @@ from PySide.QtGui import QKeySequence
 from PySide.QtGui import QTextEdit
 
 
+
 # ==================================
 # MAIN APPLICATION CLASS DECLARATION
 # ==================================
@@ -36,10 +37,10 @@ class AppWindow(QMainWindow):
         # ====================
 
         QMainWindow.__init__(self)
-        self.setWindowTitle("Generic Text Editor")
+        self.setWindowTitle("Virtua Text Editor")
         self.setGeometry(300, 300, 1024, 768)
 
-        QToolTip.setFont(QFont("Decorative", 8, QFont.Bold))
+        QToolTip.setFont(QFont("Decorative", 9, QFont.Bold))
         self.setToolTip('Application Window')
 
         # ================================
@@ -70,16 +71,18 @@ class AppWindow(QMainWindow):
         self.setStatusBar(self.app_status_bar)
 
         self.create_toolbar()
-        self.maintoolbar.addAction(self.newAction)
-        self.maintoolbar.addSeparator()
-        self.maintoolbar.addAction(self.copyAction)
-        self.maintoolbar.addAction(self.pasteAction)
+        self.toolbar.addAction(self.newAction)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.copyAction)
+        self.toolbar.addAction(self.pasteAction)
+
 
     def create_toolbar(self):
         # ===============================
         # Function to create the toolbar.
         # ===============================
-        self.maintoolbar = self.addToolBar('Main')
+        self.toolbar = self.addToolBar('Main')
+
 
     def newfile(self):
         self.textEdit.setText('')
@@ -100,70 +103,72 @@ class AppWindow(QMainWindow):
         # =========================================
         # Function to create actions for menu items
         # =========================================
-        self.newAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'New',
-                                 self, shortcut=QKeySequence.New,
-                                 statusTip="Create a New File",
-                                 triggered=self.newfile)
 
-        self.openAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'Open',
-                                  self, shortcut=QKeySequence.Open,
-                                  statusTip="Open a file",
-                                  triggered=self.openfile)
+        self.newAction = QAction(QIcon('digital_assets/document-new.svg'), 'New', self)
+        self.newAction.setShortcut(QKeySequence.New)
+        self.newAction.setStatusTip("Create a New File")
+        self.newAction.setIconText("New")
+        self.newAction.triggered.connect(self.newfile)
 
-        self.saveAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'Save',
-                                  self, shortcut=QKeySequence.Save,
-                                  statusTip="Save a File",
-                                  triggered=self.savefile)
+        self.openAction = QAction(QIcon('digital_assets/document-open.svg'), 'Open', self)
+        self.openAction.setShortcut(QKeySequence.Open)
+        self.openAction.setStatusTip("Open a file")
+        self.openAction.triggered.connect(self.openfile)
 
-        self.saveasAction = QAction(QIcon('/digital_assets/AppIcon.png'), 'Save As',
-                                    self, shortcut=QKeySequence.SaveAs,
-                                    statusTip="Save a File As....",
-                                    triggered=self.saveasfile)
+        self.saveAction = QAction(QIcon('digital_assets/document-save.svg'), 'Save', self)
+        self.saveAction.setShortcut(QKeySequence.Save)
+        self.saveAction.setStatusTip("Save a file")
+        self.saveAction.triggered.connect(self.savefile)
 
-        self.exitAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Exit',
-                                  self, shortcut=QKeySequence.Quit,
-                                  statusTip="Exit the Application",
-                                  triggered=self.quit_application)
+        self.saveasAction = QAction(QIcon('digital_assets/document-save-as.svg'), 'Save As', self)
+        self.saveasAction.setShortcut(QKeySequence.SaveAs)
+        self.saveasAction.setStatusTip("Save a File As....")
+        self.saveasAction.triggered.connect(self.saveasfile)
 
-        self.undoAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Undo',
-                                  self, shortcut=QKeySequence.Undo,
-                                  statusTip="Undo",
-                                  triggered=self.textEdit.undo)
+        self.exitAction = QAction(QIcon('digital_assets/application-exit.svg'), 'Exit', self)
+        self.exitAction.setShortcut(QKeySequence.Quit)
+        self.exitAction.setStatusTip("Exit the Application")
+        self.exitAction.triggered.connect(self.quit_application)
 
-        self.redoAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Redo',
-                                  self, shortcut=QKeySequence.Redo,
-                                  statusTip="Redo",
-                                  triggered=self.textEdit.redo)
+        self.undoAction = QAction(QIcon('digital_assets/edit-undo.svg'), 'Undo', self)
+        self.undoAction.setShortcut(QKeySequence.Undo)
+        self.undoAction.setStatusTip("Undo")
+        self.undoAction.triggered.connect(self.textEdit.undo)
 
-        self.cutAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Cut',
-                                 self, shortcut=QKeySequence.Cut,
-                                 statusTip="Cut",
-                                 enabled=self.textEdit.textCursor().hasSelection(),
-                                 triggered=self.textEdit.cut)
+        self.redoAction = QAction(QIcon('digital_assets/edit-redo.svg'), 'Redo', self)
+        self.redoAction.setShortcut(QKeySequence.Redo)
+        self.redoAction.setStatusTip("Redo")
+        self.redoAction.triggered.connect(self.textEdit.redo)
 
-        self.copyAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Copy',
-                                  self, shortcut=QKeySequence.Copy,
-                                  statusTip="Copy",
-                                  triggered=self.textEdit.copy)
+        self.cutAction = QAction(QIcon('digital_assets/edit-cut.svg'), 'Cut', self)
+        self.cutAction.setShortcut(QKeySequence.Cut)
+        self.cutAction.setStatusTip("Cut")
+        self.cutAction.triggered.connect(self.textEdit.cut)
 
-        self.pasteAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Paste',
-                                   self, shortcut=QKeySequence.Paste,
-                                   statusTip="Paste",
-                                   triggered=self.textEdit.paste)
+        self.copyAction = QAction(QIcon('digital_assets/edit-copy.svg'), 'Copy', self)
+        self.copyAction.setShortcut(QKeySequence.Copy)
+        self.copyAction.setStatusTip("Copy")
+        self.copyAction.triggered.connect(self.textEdit.copy)
 
-        self.selectallAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Select All',
-                                       self, shortcut=QKeySequence.SelectAll,
-                                       statusTip="Select All",
-                                       triggered=self.textEdit.selectAll)
+        self.pasteAction = QAction(QIcon('digital_assets/edit-paste.svg'), 'Paste', self)
+        self.pasteAction.setShortcut(QKeySequence.Paste)
+        self.pasteAction.setStatusTip("Paste")
+        self.pasteAction.triggered.connect(self.textEdit.paste)
 
-        self.deselectallAction = QAction(QIcon('digital_assets/AppIcon.png'), 'Deselect All',
-                                         self, shortcut="Shift+Ctrl+A",
-                                         statusTip="Deselect All",
-                                         triggered=self.deselect_all_text)
+        self.selectallAction = QAction(QIcon('digital_assets/edit-select-all.svg'), 'Select All', self)
+        self.selectallAction.setShortcut(QKeySequence.SelectAll)
+        self.selectallAction.setStatusTip("Select All")
+        self.selectallAction.triggered.connect(self.textEdit.selectAll)
 
-        self.aboutAction = QAction(QIcon('digital_assets/AppIcon.png'), 'About',
-                                   self, statusTip="Displays info about the application",
-                                   triggered=self.show_about)
+        self.deselectallAction = QAction(QIcon('digital_assets/edit-select-all.svg'), 'Deselect All', self)
+        self.deselectallAction.setShortcut("Shift+Ctrl+A")
+        self.deselectallAction.setStatusTip("Deselect All")
+        self.deselectallAction.triggered.connect(self.deselect_all_text)
+
+        self.aboutAction = QAction(QIcon('digital_assets/AppIcon.png'), 'About', self)
+        self.aboutAction.setStatusTip("Displays info about the application")
+        self.aboutAction.triggered.connect(self.show_about)
+
 
     def deselect_all_text(self):
         text_cursor = self.textEdit.textCursor()
@@ -198,11 +203,12 @@ class AppWindow(QMainWindow):
 
     def show_about(self):
         QMessageBox.about(self, "About VirtuaEditor",
-                          "VirtuaEditor has been written as a template application"
-                          " that can be used as a basis for creating a working application."
-                          " All of the components that make up the core functions of an"
+                          "<p><b><h3>Virtua Editor Application</h3></b></p>"
+                          "<p>VirtuaEditor has been written as a template application"
+                          " that can be used as a basis for creating a working application.</p>"
+                          " <p>All of the components that make up the core functions of an"
                           " application, the main window, a status bar, menus and dialogs"
-                          " are provided here as a basis for writing something new and interesting")
+                          " are provided here as a basis for writing something new and interesting</p>")
 
     def center_application(self):
         # ============================================
