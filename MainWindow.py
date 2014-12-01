@@ -19,8 +19,17 @@ from PySide.QtGui import QStatusBar
 from PySide.QtGui import QAction
 from PySide.QtGui import QKeySequence
 from PySide.QtGui import QTextEdit
+import PySide.QtCore
 
-
+# =================================================
+# Check platform type and set resources accordingly
+# =================================================
+if sys.platform.startswith('linux2'):
+    platform_images = ":/digital_assets/linux"
+elif sys.platform.startswith('darwin'):
+    platform_images = ":/digital_assets/macintosh"
+elif sys.platform.startswith('windows'):
+    platform_images = ":/digital_assets/windows"
 
 # ==================================
 # MAIN APPLICATION CLASS DECLARATION
@@ -40,22 +49,27 @@ class AppWindow(QMainWindow):
         self.setWindowTitle("Virtua Text Editor")
         self.setGeometry(300, 300, 1024, 768)
 
-        QToolTip.setFont(QFont("Decorative", 9, QFont.Bold))
+        QToolTip.setFont(QFont("Ubuntu", 10, QFont.Normal))
         self.setToolTip('Application Window')
 
         # ================================
         # Function to setup menus, etc etc
         # ================================
         self.textEdit = QTextEdit()
+        self.textEdit.setFont(QFont("Ubuntu", 12, QFont.Normal))
         self.setCentralWidget(self.textEdit)
         self.create_menus()
         self.create_actions()
+
         self.fileMenu.addAction(self.newAction)
         self.fileMenu.addAction(self.openAction)
         self.fileMenu.addAction(self.saveAction)
         self.fileMenu.addAction(self.saveasAction)
         self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.printAction)
+        self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.exitAction)
+
         self.editMenu.addAction(self.undoAction)
         self.editMenu.addAction(self.redoAction)
         self.editMenu.addAction(self.cutAction)
@@ -64,17 +78,30 @@ class AppWindow(QMainWindow):
         self.editMenu.addSeparator()
         self.editMenu.addAction(self.selectallAction)
         self.editMenu.addAction(self.deselectallAction)
+        self.editMenu.addSeparator()
+        self.editMenu.addAction(self.findAction)
+        self.editMenu.addAction(self.findReplaceAction)
+
         self.helpMenu.addAction(self.aboutAction)
 
         self.app_status_bar = QStatusBar()
-        self.app_status_bar.showMessage('Ready', 10000)
+        self.app_status_bar.showMessage('Ready, v0.2', 10000)
         self.setStatusBar(self.app_status_bar)
 
         self.create_toolbar()
         self.toolbar.addAction(self.newAction)
         self.toolbar.addSeparator()
+        self.toolbar.addAction(self.cutAction)
         self.toolbar.addAction(self.copyAction)
         self.toolbar.addAction(self.pasteAction)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.printAction)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.undoAction)
+        self.toolbar.addAction(self.redoAction)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.findAction)
+        self.toolbar.addAction(self.findReplaceAction)
 
 
     def create_toolbar(self):
@@ -82,7 +109,7 @@ class AppWindow(QMainWindow):
         # Function to create the toolbar.
         # ===============================
         self.toolbar = self.addToolBar('Main')
-
+        self.toolbar.setToolButtonStyle(PySide.QtCore.Qt.ToolButtonTextUnderIcon)
 
     def newfile(self):
         self.textEdit.setText('')
@@ -98,6 +125,18 @@ class AppWindow(QMainWindow):
     # TODO: Create the file/saveas method
     def saveasfile(self):
         print "Save As File Menu Selected"
+
+    # TODO: Create the print method
+    def print_page(self):
+        print "Print Page Selected"
+
+    # TODO: Create the find method
+    def find_text(self):
+        print "Find text option selected"
+
+    # TODO: Create the replace method
+    def find_replace_text(self):
+        print "Replace text selected"
 
     def create_actions(self):
         # =========================================
@@ -125,17 +164,22 @@ class AppWindow(QMainWindow):
         self.saveasAction.setStatusTip("Save a File As....")
         self.saveasAction.triggered.connect(self.saveasfile)
 
+        self.printAction = QAction(QIcon('digital_assets/document-print.svg'), 'Print', self)
+        self.printAction.setShortcut(QKeySequence.Print)
+        self.printAction.setStatusTip("Print")
+        self.printAction.triggered.connect(self.print_page)
+
         self.exitAction = QAction(QIcon('digital_assets/application-exit.svg'), 'Exit', self)
         self.exitAction.setShortcut(QKeySequence.Quit)
         self.exitAction.setStatusTip("Exit the Application")
         self.exitAction.triggered.connect(self.quit_application)
 
-        self.undoAction = QAction(QIcon('digital_assets/edit-undo.svg'), 'Undo', self)
+        self.undoAction = QAction(QIcon('digital_assets/undo.svg'), 'Undo', self)
         self.undoAction.setShortcut(QKeySequence.Undo)
         self.undoAction.setStatusTip("Undo")
         self.undoAction.triggered.connect(self.textEdit.undo)
 
-        self.redoAction = QAction(QIcon('digital_assets/edit-redo.svg'), 'Redo', self)
+        self.redoAction = QAction(QIcon('digital_assets/redo.svg'), 'Redo', self)
         self.redoAction.setShortcut(QKeySequence.Redo)
         self.redoAction.setStatusTip("Redo")
         self.redoAction.triggered.connect(self.textEdit.redo)
@@ -143,16 +187,19 @@ class AppWindow(QMainWindow):
         self.cutAction = QAction(QIcon('digital_assets/edit-cut.svg'), 'Cut', self)
         self.cutAction.setShortcut(QKeySequence.Cut)
         self.cutAction.setStatusTip("Cut")
+        self.cutAction.setEnabled(False)
         self.cutAction.triggered.connect(self.textEdit.cut)
 
         self.copyAction = QAction(QIcon('digital_assets/edit-copy.svg'), 'Copy', self)
         self.copyAction.setShortcut(QKeySequence.Copy)
         self.copyAction.setStatusTip("Copy")
+        self.copyAction.setEnabled(False)
         self.copyAction.triggered.connect(self.textEdit.copy)
 
         self.pasteAction = QAction(QIcon('digital_assets/edit-paste.svg'), 'Paste', self)
         self.pasteAction.setShortcut(QKeySequence.Paste)
         self.pasteAction.setStatusTip("Paste")
+        self.pasteAction.setEnabled(False)
         self.pasteAction.triggered.connect(self.textEdit.paste)
 
         self.selectallAction = QAction(QIcon('digital_assets/edit-select-all.svg'), 'Select All', self)
@@ -164,6 +211,16 @@ class AppWindow(QMainWindow):
         self.deselectallAction.setShortcut("Shift+Ctrl+A")
         self.deselectallAction.setStatusTip("Deselect All")
         self.deselectallAction.triggered.connect(self.deselect_all_text)
+
+        self.findAction = QAction(QIcon('digital_assets/edit-find.svg'), 'Find', self)
+        self.findAction.setShortcut(QKeySequence.Find)
+        self.findAction.setStatusTip("Find")
+        self.findAction.triggered.connect(self.find_text)
+
+        self.findReplaceAction = QAction(QIcon('digital_assets/edit-find-replace.svg'), 'Replace', self)
+        self.findReplaceAction.setShortcut(QKeySequence.Replace)
+        self.findReplaceAction.setShortcut("Replace")
+        self.findReplaceAction.triggered.connect(self.find_replace_text)
 
         self.aboutAction = QAction(QIcon('digital_assets/AppIcon.png'), 'About', self)
         self.aboutAction.setStatusTip("Displays info about the application")
@@ -179,9 +236,12 @@ class AppWindow(QMainWindow):
         # ================================
         # Function to create the menu bar.
         # ================================
-        self.fileMenu = self.menuBar().addMenu("&File")
-        self.editMenu = self.menuBar().addMenu("&Edit")
-        self.helpMenu = self.menuBar().addMenu("&Help")
+        self.fileMenu = self.menuBar().addMenu("File")
+        self.fileMenu.setFont(QFont("Ubuntu", 10, QFont.Normal))
+        self.editMenu = self.menuBar().addMenu("Edit")
+        self.editMenu.setFont(QFont("Ubuntu", 10, QFont.Normal))
+        self.helpMenu = self.menuBar().addMenu("Help")
+        self.helpMenu.setFont(QFont("Ubuntu", 10, QFont.Normal))
 
     def set_icon(self):
         # ===============================
@@ -202,13 +262,13 @@ class AppWindow(QMainWindow):
             pass
 
     def show_about(self):
-        QMessageBox.about(self, "About VirtuaEditor",
-                          "<p><b><h3>Virtua Editor Application</h3></b></p>"
-                          "<p>VirtuaEditor has been written as a template application"
-                          " that can be used as a basis for creating a working application.</p>"
-                          " <p>All of the components that make up the core functions of an"
+        QMessageBox.about(self, "About Virtua Text Editor",
+                          "<b><h3>Virtua Text Editor</h3></b>"
+                          "<p><h4>Virtua Text Editor has been written to serve as a template"
+                          " that can be used as a basis for creating a working application."
+                          " All of the components that make up the core functions of an"
                           " application, the main window, a status bar, menus and dialogs"
-                          " are provided here as a basis for writing something new and interesting</p>")
+                          " are provided here as a basis for writing something new and interesting</h4></p>")
 
     def center_application(self):
         # ============================================
@@ -238,6 +298,7 @@ if __name__ == '__main__':
         templateWindow = AppWindow()
         templateWindow.set_icon()
         templateWindow.center_application()
+        templateWindow.setFont(QFont("Ubuntu", 10, QFont.Normal))
         #templateWindow.create_status_bar()
         #templateWindow.setup_components()
         templateWindow.show()
